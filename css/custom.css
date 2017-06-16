@@ -1,18 +1,33 @@
 /* Clearfix */
 .cf:before,
 .cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+  content: " "; /* 1 */
+  display: table; /* 2 */
 }
 .cf:after {
-    clear: both;
+  clear: both;
 }
 /**
  * For IE 6/7 only
  * Include this rule to trigger hasLayout and contain floats.
  */
 .cf {
-    *zoom: 1;
+  *zoom: 1;
+}
+
+.hr-group {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+hr {
+  display: block;
+  margin: 7px auto;
+  height: 1px;
+  border-style: inset;
+  border-color: #4B4B4B;
+  background-color: #4B4B4B;
+  color: #4B4B4B;
 }
 
 .brake-type-icon {
@@ -34,6 +49,11 @@
 .product-template-default h2,
 .product-template-default h3 {
   font-size: 2em;
+  font-weight: bold;
+}
+
+.product-template-default .sidebar {
+  display: none;
 }
 
 .woocommerce-product-details__short-description > ul {
@@ -58,7 +78,7 @@
 }
 
 #detail-buttons {
-  margin: 20px 0;
+  margin: 20px 0 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -82,10 +102,11 @@
   text-decoration: none;
 }
 
-#detail-buttons #detail-ask-our-experts {
-    -webkit-box-flex: 1;
+#detail-buttons > * {
+    /*-webkit-box-flex: 1;
     -ms-flex: 1 1 60%;
-    flex: 1 1 60%;
+    flex: 1 1 50%;*/
+    width: 50%;
     margin-right: 20px;
 }
 
@@ -112,6 +133,11 @@
   background-image: url(../images/download-icon.svg);
   background-position: 14% 50%;
   background-repeat: no-repeat;
+}
+
+.product .summary .product_title,
+.product .product_meta {
+  display: none;
 }
 
 /* Specifications table */
@@ -147,6 +173,10 @@
     text-transform: capitalize;
 }
 
+.torque-info {
+  width: 100%;
+  height: auto;
+}
 
 /*
  * Media Queries

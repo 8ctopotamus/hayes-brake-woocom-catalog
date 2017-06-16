@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-
+add_theme_support( 'wc-product-gallery-lightbox' );
 
 function hayes_cat_register_scripts_and_styles() {
 	wp_enqueue_style( 'hayes-cat-style', plugins_url( '/css/custom.css',  __FILE__ ));
@@ -37,30 +37,40 @@ function woo_remove_product_tabs( $tabs ) {
 * Customize Product Title and move above product image
 */
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_title', 5 );
-add_action('woocommerce_before_single_product_summary', 'woocommerce_hayes_single_title', 10);
+add_action('woocommerce_before_single_product', 'woocommerce_hayes_single_title', 10);
 function woocommerce_hayes_single_title() { ?>
-  <img
-  	src="<?php bloginfo('template_directory'); ?>/images/brake-type-icons/hydraulic-brake.png"
-  	class="brake-type-icon"
-  	alt="hydraulic brake"
-  />
+  <div class="row">
+    <img
+      src="<?php echo plugins_url( 'images/brake-type-icons/hydraulic-brake.png', __FILE__ )?>"
+    	class="brake-type-icon"
+    	alt="hydraulic brake"
+    />
 
-  <?php the_title( '<h1 class="product_title entry-title">', '</h1>' );
+    <?php the_title( '<h1 class="product_title entry-title">', '</h1>' );
 
-  if ( get_field('introduction') ) {
-  	echo '<h3 class="introduction">';
-  	echo the_field('introduction');
-  	echo '</h3>';
-  }
-}
+    if ( get_field('introduction') ) {
+    	echo '<h3 class="introduction">';
+    	echo the_field('introduction');
+    	echo '</h3>';
+    } ?>
+  </div>
+<?php }
 
 
 /*
 * Moves Single Product categories to under title
 */
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
-add_action( 'woocommerce_before_single_product_summary', 'woocommerce_template_single_meta', 10 );
+add_action( 'woocommerce_before_single_product', 'woocommerce_template_single_meta', 10 );
 
+/*
+* Design elements
+*/
+add_action( 'woocommerce_before_single_product', 'xtraDesignElements', 50 );
+function xtraDesignElements() {
+  echo '<div class="cf"></div>';
+  echo '<div class="hr-group"><hr/><hr/><hr/></div>';
+}
 
 /*
 * Add "ask an expert" and "Spec Sheet download" buttons
@@ -85,8 +95,8 @@ function renderButtons() { ?>
 /*
 * Adds Specifications table to product page
 */
-add_action('woocommerce_after_single_product_summary', 'renderSpecTable', 40);
-function renderSpecTable() {
+add_action('woocommerce_after_single_product_summary', 'renderSpecTableAndTorqueInfo', 40);
+function renderSpecTableAndTorqueInfo() {
 	/*
 	 * ACF CUSTOM FIELDS! - Generates Specifications Table
 	 */
@@ -110,59 +120,88 @@ function renderSpecTable() {
 	 	 $bleeder = get_field_object('hydraulic_bleeder')
 	 );
 
+   $torqueInfo = get_field('torque_information');
+
+   if ( $torqueInfo ) {
+     $gridSize = 6;
+   }
+   else {
+     $gridSize = 12;
+   }
+
 	?>
 
   <div class="cf"></div>
+  <div class="hr-group">
+    <hr/>
+    <hr/>
+    <hr/>
+  </div>
 
-  <h3>SPECIFICATIONS</h3>
+  <div class="row">
+    <div class="col-<?php echo $gridSize; ?>">
+      <h3>SPECIFICATIONS</h3>
+    	<table class="specifications-table">
+    		<tbody>
+    			<?php
+    			/*
+    			* Get predefined Specification fields
+    			*/
 
-	<table class="specifications-table">
-		<tbody>
-			<?php
-			/*
-			* Get predefined Specification fields
-			*/
+    			foreach ($fields as $field) {
+    				if ( $field['value'] ) {
+    					echo '<tr>';
+    					if ( is_array($field['value']) ) {
+    						echo '<td>' . $field['label'] . '</td>';
+    						echo '<td>';
+    						forEach ($field['value'] as $val) {
+    							echo $val . '<br/>';
+    						}
+    						echo '</td>';
+    					}
+    					else {
+    						echo '<td>' . $field['label'] . '</td><td>' . $field['value'] . '</td>';
+    					}
+    					echo '</tr>';
+    				}
+    	 	 	}
 
-			foreach ($fields as $field) {
-				if ( $field['value'] ) {
-					echo '<tr>';
-					if ( is_array($field['value']) ) {
-						echo '<td>' . $field['label'] . '</td>';
-						echo '<td>';
-						forEach ($field['value'] as $val) {
-							echo $val . '<br/>';
-						}
-						echo '</td>';
-					}
-					else {
-						echo '<td>' . $field['label'] . '</td><td>' . $field['value'] . '</td>';
-					}
-					echo '</tr>';
-				}
-	 	 	}
+    		  /*
+    			 * Additional Repeater fields for table
+    			 */
+    			if ( have_rows('additional_specifications') ): ?>
+    		 		<tr>
+    		 		<?php while( have_rows('additional_specifications') ): the_row();
+    		 			// vars
+    		 			$label = get_sub_field('specification_label');
+    		 			$value = get_sub_field('specification_value');
+    		 			?>
 
-		  /*
-			 * Additional Repeater fields for table
-			 */
-			if ( have_rows('additional_specifications') ): ?>
-		 		<tr>
-		 		<?php while( have_rows('additional_specifications') ): the_row();
-		 			// vars
-		 			$label = get_sub_field('specification_label');
-		 			$value = get_sub_field('specification_value');
-		 			?>
+    					<td>
+    						<?php echo $label; ?>
+    					</td>
+    		 			<td>
+    		 				<?php echo $value; ?>
+    					</td>
 
-					<td>
-						<?php echo $label; ?>
-					</td>
-		 			<td>
-		 				<?php echo $value; ?>
-					</td>
+    		 		<?php endwhile; ?>
+    				</tr>
+    		 	<?php endif; ?>
+    		</tbody>
+    	</table>
+    	<p>Specifications are guidelines only and subject to change. Consult Hayes for specific model, part number, and assembly drawings.</p>
+    </div>
 
-		 		<?php endwhile; ?>
-				</tr>
-		 	<?php endif; ?>
-		</tbody>
-	</table>
-	<p>Specifications are guidelines only and subject to change. Consult Hayes for specific model, part number, and assembly drawings.</p>
+    <?php if($torqueInfo) {?>
+      <div class="col-6">
+        <h3>TORQUE INFORMATION</h3>
+        <img
+          src="<?php echo $torqueInfo; ?>"
+          class="torque-info"
+          alt="torque info" />
+      </div>
+    <?php } ?>
+  </div>
+
+  <h3>REFERENCE DIMENSIONS</h3>
 <?php }
