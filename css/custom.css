@@ -1,0 +1,157 @@
+/* Clearfix */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+.cf:after {
+    clear: both;
+}
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
+
+.brake-type-icon {
+  width: 116px;
+  height: auto;
+  float: right;
+}
+
+/*
+ * WooCommerce Customizations
+ */
+
+.introduction {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #A6A6A6;
+}
+
+.product-template-default h2,
+.product-template-default h3 {
+  font-size: 2em;
+}
+
+.woocommerce-product-details__short-description > ul {
+  padding-left: 0;
+  list-style-type: none;
+  margin-bottom: 14px;
+}
+
+.woocommerce-product-details__short-description > ul li {
+  list-style-position: inside;
+  padding: 10px 0 10px 20px;
+  text-indent: -1.5em;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.woocommerce-product-details__short-description > ul li::before {
+  content: "//";
+  padding-right: 5px;
+  color: #FF6700;
+}
+
+#detail-buttons {
+  margin: 20px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-flow: nowrap;
+  flex-flow: nowrap;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-line-pack: justify;
+  align-content: space-between;
+}
+
+#detail-buttons a {
+  text-decoration: none;
+}
+
+#detail-buttons #detail-ask-our-experts {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 60%;
+    flex: 1 1 60%;
+    margin-right: 20px;
+}
+
+#detail-buttons .hb-button {
+  font: 700 14px/25px "news-gothic-std", Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
+  padding: 18px 18px;
+  color: #ffffff;
+  text-transform: uppercase;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+
+.orange {
+  background-color: #FF6700;
+  margin-right: 20px;
+}
+
+.gray {
+  margin-top: 0;
+  background: #4a4a4a;
+  background-image: url(../images/download-icon.svg);
+  background-position: 14% 50%;
+  background-repeat: no-repeat;
+}
+
+/* Specifications table */
+.specifications-table {
+  width: 100%;
+  margin: 20px 0 15px;
+}
+
+.specifications-table tr:nth-child(odd) {
+  background: #262626;
+}
+
+.specifications-table tr:nth-child(even) {
+  background: #171717;
+}
+
+.specifications-table tr {
+  font: 700 14px/16px "news-gothic-std", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #000000;
+}
+
+.specifications-table td {
+    padding: 22px 21px;
+}
+
+.specifications-table td:first-child {
+    border-right: 2px solid #000000;
+    text-transform: uppercase;
+}
+
+.specifications-table td:nth-child(2) {
+    text-transform: capitalize;
+}
+
+
+/*
+ * Media Queries
+ */
+
+@media screen and (max-width: 991px) {
+  .brake-type-icon { width: 76px; }
+}
