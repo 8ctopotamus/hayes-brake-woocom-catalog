@@ -74,7 +74,7 @@ hr {
 .woocommerce-product-details__short-description > ul li::before {
   content: "//";
   padding-right: 5px;
-  color: #FF6700;
+  color: #FE4612;
 }
 
 #detail-buttons {
@@ -123,7 +123,7 @@ hr {
 }
 
 .orange {
-  background-color: #FF6700;
+  background-color: #FE4612;
   margin-right: 20px;
 }
 
@@ -177,6 +177,9 @@ hr {
   width: 100%;
   height: auto;
 }
+
+/* Hide WC related products */
+.related { display: none !important; }
 
 /*
  * Media Queries
