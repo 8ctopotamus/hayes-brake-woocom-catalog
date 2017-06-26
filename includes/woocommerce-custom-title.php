@@ -6,11 +6,32 @@ remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_singl
 add_action('woocommerce_before_single_product', 'woocommerce_hayes_single_title', 10);
 function woocommerce_hayes_single_title() {
 	global $product;
+	global $post;
+
+	$marketTypes = [];
+  $terms = get_the_terms( $post->ID, 'product_cat' );
+
+	foreach ($terms as $term) {
+    $product_cat_name = $term->name;
+		// Brake Type Icons
+		if ($product_cat_name === 'Hydraulic Brakes') {
+			$catIconPath = 'hydraulic-brake.png';
+		} elseif ($product_cat_name === 'Master Cylinder') {
+			$catIconPath = 'master-cylinder.png';
+		} elseif ($product_cat_name === 'Actuators') {
+		  $catIconPath = 'actuator.png';
+	  } elseif ($product_cat_name === 'Mechanical Brakes') {
+			$catIconPath = 'mechanical-brake.png';
+		} else {
+			array_push($marketTypes, $product_cat_name);
+		}
+	}
+
 	?>
 
   <div class="row">
     <img
-      src="<?php echo plugins_url( '../images/brake-type-icons/hydraulic-brake.png', __FILE__ )?>"
+      src="<?php echo plugins_url( '../images/brake-type-icons/' . $catIconPath, __FILE__ )?>"
     	class="brake-type-icon"
     	alt="hydraulic brake"
     />
@@ -23,7 +44,14 @@ function woocommerce_hayes_single_title() {
     	echo '</h3>';
     } ?>
 
-		<?php echo wc_get_product_category_list( $product->get_id(), ', ', '<span class="posted_in">' . _n( 'Category:', 'Categories:', count( $product->get_category_ids() ), 'woocommerce' ) . ' ', '</span>' ); ?>
+		<?php
+			foreach($marketTypes as $icon) {
+				if ($icon === 'UTV or ROV or SXS') {
+					$icon = 'utv';
+				}
+				echo '<img src="'. plugins_url( '../images/market-category-icons/'. $icon . '.png', __FILE__ ) .'" alt="'. $icon .' Markets" class="market-icon" />';
+			}
+		?>
   </div>
 
 <?php }

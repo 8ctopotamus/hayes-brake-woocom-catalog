@@ -35,7 +35,9 @@ function renderSpecTableAndTorqueInfo() {
         $brakeLight = get_field_object('master_cyl_brake_light'),
         $fluidType = get_field_object('master_cyl_fluid_type')
       );
+    } elseif ($product_cat_name === 'Actuators') {
 
+    } elseif ($product_cat_name === 'Mechanical Brakes') {
 
     }
  }

@@ -181,6 +181,10 @@ hr {
 /* Hide WC related products */
 .related { display: none !important; }
 
+.market-icon {
+  margin: 10px 15px 0 0;
+}
+
 /*
  * Media Queries
  */
