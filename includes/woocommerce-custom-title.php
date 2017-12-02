@@ -49,7 +49,7 @@ function woocommerce_hayes_single_title() {
 				if ($icon === 'UTV or ROV or SXS') {
 					$icon = 'utv';
 				}
-				echo '<img src="'. plugins_url( '../images/market-category-icons/'. $icon . '.png', __FILE__ ) .'" alt="'. $icon .' Markets" class="market-icon" />';
+				echo '<img src="'. plugins_url( '../images/market-category-icons/'. strtolower($icon) . '.png', __FILE__ ) .'" alt="'. $icon .' Markets" class="market-icon" />';
 			}
 		?>
   </div>

@@ -5,15 +5,19 @@
 add_action('woocommerce_after_single_product_summary', 'renderSpecTableAndTorqueInfo', 40);
 function renderSpecTableAndTorqueInfo() {
   global $post;
+
+  /*
+   * ACF CUSTOM FIELDS! - Generates Specifications Table
+   */
+
   $terms = get_the_terms( $post->ID, 'product_cat' );
   foreach ($terms as $term  ) {
     $product_cat_name = $term->name;
 
-    if ($product_cat_name === 'Hydraulic Brakes') {
+    if ($product_cat_name === 'Hydraulic Brakes' || $product_cat_name === 'Mechanical Brakes') {
       $specifications = array(
         $weight = get_field_object('hydraulic_weight'),
-        $rotorDiameterSm = get_field_object('hydraulic_rotor_diameter_small'),
-        $rotorDiameterLg = get_field_object('hydraulic_rotor_diameter_large'),
+        $rotorDiameterSm = get_field_object('hydraulic_rotor_diameter'),
         $rotorThickness = get_field_object('hydraulic_rotor_thickness'),
         $liningType = get_field_object('hydraulic_lining_type'),
         $totalLiningArea = get_field_object('hydraulic_total_lining_area'),
@@ -36,33 +40,36 @@ function renderSpecTableAndTorqueInfo() {
         $fluidType = get_field_object('master_cyl_fluid_type')
       );
     } elseif ($product_cat_name === 'Actuators') {
-
-    } elseif ($product_cat_name === 'Mechanical Brakes') {
-
+      $specifications = array(
+        $weight => get_field_object('actu_weight'),
+        $maxPressure => get_field_object('actu_max_pressure'),
+        $type => get_field_object('actu_type'),
+        $fluidDisplacement => get_field_object('actu_fluid_displacement'),
+        $fluidType => get_field_object('actu_fluid_type'),
+        $typicalSpecs => get_field_object('actu_typical_specifications')
+      );
     }
  }
 
-  /*
-   * ACF CUSTOM FIELDS! - Generates Specifications Table
-   */
+ // ACF - common product fields
+ $refDims = array(
+   $refDim1 = get_field('reference_dimensions_1'),
+   $refDim2 = get_field('reference_dimensions_2'),
+   $refDim3 = get_field('reference_dimensions_3')
+ );
+ $torqueInfo = get_field('torque_information');
+ $torqueInfo2 = get_field('torque_information_2');
 
-   // ACF - common product fields
-   $refDims = array(
-     $refDim1 = get_field('reference_dimensions_1'),
-     $refDim2 = get_field('reference_dimensions_2'),
-     $refDim3 = get_field('reference_dimensions_3')
-   );
-   $torqueInfo = get_field('torque_information');
 
-   // calculate the grid
-   if ( $torqueInfo ) {
-     $gridSize = 6;
-   }
-   else {
-     $gridSize = 12;
-   }
+ // calculate the grid
+ if (!empty($refDims) || $torqueInfo || $torqueInfo2 ) {
+   $gridSize = 6;
+ }
+ else {
+   $gridSize = 12;
+ }
 
-  ?>
+?>
 
   <div class="cf"></div>
   <div class="hr-group">
@@ -80,7 +87,6 @@ function renderSpecTableAndTorqueInfo() {
           /*
           * Get predefined Specification fields
           */
-
           foreach ($specifications as $field) {
             if ( $field['value'] ) {
               // Begin row
@@ -109,54 +115,70 @@ function renderSpecTableAndTorqueInfo() {
            * Additional Repeater fields for table
            */
           if ( have_rows('additional_specifications') ): ?>
-            <tr>
+
             <?php while( have_rows('additional_specifications') ): the_row();
               // vars
               $label = get_sub_field('specification_label');
               $value = get_sub_field('specification_value');
               ?>
-
-              <td>
-                <?php echo $label; ?>
-              </td>
-              <td>
-                <?php echo $value; ?>
-              </td>
-
+              <tr>
+                <td>
+                  <?php echo $label; ?>
+                </td>
+                <td>
+                  <?php echo $value; ?>
+                </td>
+              </tr>
             <?php endwhile; ?>
-            </tr>
+
           <?php endif; ?>
         </tbody>
       </table>
       <p>Specifications are guidelines only and subject to change. Consult Hayes for specific model, part number, and assembly drawings.</p>
     </div>
 
-    <?php if($torqueInfo) {?>
+    <?php if(!empty($refDims) || $torqueInfo || $torqueInfo2) {?>
       <div class="col-6">
-        <h3>TORQUE INFORMATION</h3>
-        <img
-          src="<?php echo $torqueInfo; ?>"
-          class="torque-info"
-          alt="torque info" />
+
+        <?php if ($torqueInfo || $torqueInfo2) { ?>
+          <h3>TORQUE INFORMATION</h3>
+        <?php } ?>
+
+        <?php if ($torqueInfo) { ?> 
+          <a href="<?php echo $torqueInfo; ?>" class="torque-info">
+            <img
+              src="<?php echo $torqueInfo; ?>"
+              
+              alt="torque info" />
+           </a>
+        <?php } ?>
+
+        <?php if ($torqueInfo2) { ?>
+          <a href="<?php echo $torqueInfo2; ?>" class="torque-info">
+            <img
+              src="<?php echo $torqueInfo2; ?>"
+              class="torque-info"
+              alt="torque info 2" />
+           </a>
+        <?php } ?>
+     
+
+        <?php
+          if (get_field('reference_dimensions_1')) {
+            echo '<h3>REFERENCE DIMENSIONS</h3>';
+          }
+
+          forEach($refDims as $ref) {
+            if ($ref) { ?>
+              <a class="reference-dimensions" href="<?php echo $ref; ?>">
+                <img src="<?php echo $ref; ?>" alt="reference dimensions" />
+              </a>
+            <?php }
+          }
+        ?>
       </div>
     <?php } ?>
   </div>
 
-
-  <div class="row">
-    <?php
-      if (get_field('reference_dimensions_1')) {
-        echo '<h3>REFERENCE DIMENSIONS</h3>';
-      }
-
-      forEach($refDims as $ref) {
-        if ($ref) { ?>
-          <div class="col-4">
-            <img src="<?php echo $ref; ?>" alt="reference dimensions" />
-          </div>
-        <?php }
-      }
-    ?>
-  </div>
 
 <?php } ?>
